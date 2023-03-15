@@ -9,8 +9,12 @@ const app = express();
 dotenv.config({ path: "config.env" });
 const PORT = process.env.PORT || 8080;
 // console.log(process.env.PORT && 0 ? "koko" : "lok");
+
 // log request
 app.use(morgan("tiny"));
+
+// mongodb connection
+require("./server/database/connection");
 
 // pass request to bodyparser
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -26,7 +30,9 @@ app.use("/js", express.static(path.resolve(__dirname, "assets/js")));
 
 // load Routers
 app.use("/", require("./server/routes/router"));
-
+app.use("/abc", () => {
+  console.log("in abc");
+});
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
