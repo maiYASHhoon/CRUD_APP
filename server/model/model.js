@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const validate = require("validator");
-const { default: isEmail } = require("validator/lib/isemail");
+// const validate = require("validator");
+// const { default: isEmail } = require("validator/lib/isemail");
 
 var schema = new mongoose.Schema({
   // const userSchema = new mongoose.Schema({
@@ -12,9 +12,9 @@ var schema = new mongoose.Schema({
     type: String,
         unique:true,
         // required: 'Please enter your email',
-        trim: true,
-        lowercase:true,
-        validate: [{ validator: value => isEmail(value), msg: 'Invalid email.' }]
+        // trim: true,
+        // lowercase:true,
+        // validate: [{ validator: value => isEmail(value), msg: 'Invalid email.' }]
   },
   gender: {
     type: String,

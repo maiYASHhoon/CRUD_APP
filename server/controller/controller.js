@@ -1,5 +1,5 @@
 var Userdb = require("../model/model");
-const multer = require("multer")
+// const multer = require("multer")
 
 // img storage
 // const Storage = multer.diskStorage({
@@ -21,7 +21,7 @@ const multer = require("multer")
 exports.create = (req, res) => {
   // validate request
   // console.log("in create");
-  console.log(req.body);
+  console.log("req.body", req.body);
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty" });
     return;
