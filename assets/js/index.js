@@ -1,5 +1,10 @@
 $("#add_user").submit(function (event) {
+
+  event.preventDefault();
+
   alert("Data Inserted Successfully!");
+  window.location ="/"; 
+
 });
 
 $("#update_user").submit(function (event) {
@@ -24,6 +29,7 @@ $("#update_user").submit(function (event) {
 
   $.ajax(request).done(function (response) {
     alert("Data Updated Successfully!!");
+    window.location ="/"; 
   });
 });
 

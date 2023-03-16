@@ -1,36 +1,57 @@
 var Userdb = require("../model/model");
+const multer = require("multer")
+
+// img storage
+// const Storage = multer.diskStorage({
+//   destination: "uploads",
+//   filename: (req, file, cb) =>{
+//     cb(null, file.originalname)
+//   }
+// })
+
+// const upload = multer({
+//   storage: Storage
+// }).single('testImage')
+
+// const uplode = multer({
+//   dest: 'images'
+// })
 
 // create and save new user
 exports.create = (req, res) => {
   // validate request
-  console.log("in create");
+  // console.log("in create");
+  console.log(req.body);
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty" });
     return;
   }
-
+console.log("req.body",req.body);
   // new user
   const user = new Userdb({
     name: req.body.name,
     email: req.body.email,
     gender: req.body.gender,
     status: req.body.status,
+    // image: {
+    //   data: req.file.filename,
+    //   contentType: 'image/png'
+    // }
   });
 
   // to save user in db
 
   user
     .save(user)
-    .then((data) => {
+    .then(data => {
       // res.send(data);
       res.redirect("/add-user");
     })
     .catch((e) => {
-      res.status(500).send({
-        message:
-          e.message || "Some error occured while creating a create operation",
-      });
+      console.log(e.message);
+      res.status(500).send("Some error occured while creating a create operation")
     });
+  console.log(user);
 };
 
 // retrive and return all users/ retrive or return single user
@@ -40,27 +61,25 @@ exports.find = (req, res) => {
     Userdb.findById(id)
       .then((data) => {
         if (!data) {
-          res.status(404).send({ message: "Not found user with id" + id });
+          res.status(404).send({ message: "Not found user with id" });
         } else {
           res.send(data);
         }
       })
       .catch((e) => {
-        res.status(500).send({ message: "Error reteriving user with id" + id });
+        res.status(500).send({ message: "Error reteriving user with id" });
       });
   } else {
-    Userdb.find()
+    Userdb.find().sort("gender status")
       .then((user) => {
         res.send(user);
       })
       .catch((e) => {
-        res.status(500).send({
-          message:
-            e.message || "Error occured while retriving user information",
-        });
+        res.status(500).send(e);
       });
   }
 };
+
 
 // update and new identified user by user id
 exports.update = (req, res) => {
@@ -72,7 +91,7 @@ exports.update = (req, res) => {
     .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `cannot Update user with ${id}. Maybe user not found`,
+          message: `cannot Update user with . Maybe user not found`,
         });
       } else {
         res.send(data);
@@ -92,7 +111,7 @@ exports.delete = (req, res) => {
       if (!data) {
         res
           .status(404)
-          .send({ message: `Cannot delete with ${id}, Maybe id is wrong` });
+          .send({ message: `Cannot delete with , Maybe id is wrong` });
       } else {
         res.send({
           message: "User was deletd Successfully",
@@ -100,6 +119,6 @@ exports.delete = (req, res) => {
       }
     })
     .catch((e) => {
-      res.status(500).send({ message: "Could not delete User with id=" + id });
+      res.status(500).send({ message: "Could not delete User with id" });
     });
 };
