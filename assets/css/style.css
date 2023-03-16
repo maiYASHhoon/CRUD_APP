@@ -85,6 +85,7 @@ a {
     margin: 2em 0;
 }
 
+
 table {
     border-spacing: 0px;
     width: 100%;
@@ -162,7 +163,7 @@ table {
 
 #update_user .form-group,
 #add_user .form-group {
-    margin: .4em 0;
+  margin: .4em 0;
 }
 
 #update_user .form-group input[type="text"],

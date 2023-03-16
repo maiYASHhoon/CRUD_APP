@@ -1,8 +1,9 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const bodyparser = require("body-parser");
+// const bodyparser = require("body-parser");
 const path = require("path");
+
 
 const app = express();
 
@@ -13,12 +14,15 @@ const PORT = process.env.PORT || 8080;
 // log request
 app.use(morgan("tiny"));
 
-// mongodb connection
+// mongodb connection 
 require("./server/database/connection");
 
-// pass request to bodyparser
-app.use(bodyparser.urlencoded({ extended: true }));
+// parse requests of content-type - application/json
+app.use(express.json());
 
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 // set view engine
 app.set("view engine", "ejs");
 // app.set('views', path.resolve(__dirname, "views/ejs"))
@@ -30,9 +34,8 @@ app.use("/js", express.static(path.resolve(__dirname, "assets/js")));
 
 // load Routers
 app.use("/", require("./server/routes/router"));
-app.use("/abc", () => {
-  console.log("in abc");
-});
+
+
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
