@@ -21,12 +21,14 @@ var Userdb = require("../model/model");
 exports.create = (req, res) => {
   // validate request
   // console.log("in create");
-  console.log("req.body", req.body);
+
+  console.log("add user called");
+
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty" });
     return;
   }
-console.log("req.body",req.body);
+
   // new user
   const user = new Userdb({
     name: req.body.name,
@@ -39,23 +41,27 @@ console.log("req.body",req.body);
     // }
   });
 
+  // send email to the email id 
+  // const sendMail = await nodemailer.sendMail(user.email)
+
   // to save user in db
 
   user
     .save(user)
-    .then(data => {
-      // res.send(data);
-      res.redirect("/add-user");
+    .then((data) => {
+      res.send(data);
     })
     .catch((e) => {
       console.log(e.message);
-      res.status(500).send("Some error occured while creating a create operation")
+      res
+        .status(500)
+        .send("Some error occured while creating a create operation");
     });
-  console.log(user);
 };
 
 // retrive and return all users/ retrive or return single user
-exports.find = (req, res) => {
+exports.find = async (req, res) => {
+  console.log("find all called");
   if (req.query.id) {
     const id = req.query.id;
     Userdb.findById(id)
@@ -70,7 +76,25 @@ exports.find = (req, res) => {
         res.status(500).send({ message: "Error reteriving user with id" });
       });
   } else {
-    Userdb.find().sort("gender status")
+    console.log(req.query);
+    // params mai gender
+    if (req.query.gender) {
+      try {
+        // incative query 
+        const filter = { gender: req.query.gender }; 
+
+        const data = await Userdb.aggregate([{ $match: filter }, {$match : {status : "Inactive"}}]);
+
+        res.send(data);
+        return;
+      } catch (err) {
+        console.log(err.message);
+        res.status(500).send(err);
+      }
+    }
+
+    Userdb.find()
+      // .sort("gender status")
       .then((user) => {
         res.send(user);
       })
@@ -79,7 +103,6 @@ exports.find = (req, res) => {
       });
   }
 };
-
 
 // update and new identified user by user id
 exports.update = (req, res) => {
