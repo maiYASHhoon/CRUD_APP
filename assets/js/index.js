@@ -2,9 +2,22 @@ $("#add_user").submit(function (event) {
 
   event.preventDefault();
 
-  alert("Data Inserted Successfully!");
-  window.location ="/"; 
+  var unindexed_array = $(this).serializeArray();
+  var data = {};
 
+  $.map(unindexed_array, function (n, i) {
+    data[n["name"]] = n["value"];
+  });
+
+  var request = {
+    "url": `http://localhost:3000/api/users`,
+    "method": "POST",
+    "data": data,
+  };
+  $.ajax(request).done(function (response) {
+    alert("Data Inserted Successfully!!");
+    window.location ="/"; 
+  });
 });
 
 $("#update_user").submit(function (event) {
@@ -53,3 +66,5 @@ if(window.location.pathname == "/"){
 
     })
 }
+
+// drop and search

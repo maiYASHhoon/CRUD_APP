@@ -1,28 +1,28 @@
 var Userdb = require("../model/model");
+const nodemailer = require('nodemailer')
 // const multer = require("multer")
 
-// img storage
-// const Storage = multer.diskStorage({
-//   destination: "uploads",
-//   filename: (req, file, cb) =>{
-//     cb(null, file.originalname)
+// const upload = multer({
+//   dest: 'avatars',
+//   limits:{
+//       filesize: 1000000
+//   },
+//   fileFilter(req, file, cb){
+//       if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+//           return cb(new Error('Please upload an Image'))
+//       }
+//       cb(undefined, true)
+//       // cb(new Error('File must be PDF'))
+//       // cb(undefined, true)
+//       // cb(undefined, false)
 //   }
 // })
 
-// const upload = multer({
-//   storage: Storage
-// }).single('testImage')
-
-// const uplode = multer({
-//   dest: 'images'
-// })
-
 // create and save new user
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   // validate request
   // console.log("in create");
-
-  console.log("add user called");
+  // console.log("add user called");
 
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty" });
@@ -35,17 +35,43 @@ exports.create = (req, res) => {
     email: req.body.email,
     gender: req.body.gender,
     status: req.body.status,
-    // image: {
-    //   data: req.file.filename,
-    //   contentType: 'image/png'
+    // image: req.body.
+    // {
+      // data: req.file.filename,
+      // contentType: 'image/png'
     // }
   });
-
+  // const buffer = await (req.file.buffer).png().toBuffer()
+  // req.user.avatar = buffer 
+  // await req.user.save()
+  // res.send()
   // send email to the email id 
-  // const sendMail = await nodemailer.sendMail(user.email)
+
+      let transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: 'cooper.emmerich37@ethereal.email',
+            pass: 'gSX2GyeuaBknE6dwa7'
+        },
+    });
+       try {
+        let info = transporter.sendMail({
+          from: '"Yash Dayama 👻" <cooper.emmerich37@ethereal.email>', // sender address
+          to: req.body.email, // list of receivers
+          subject: "Hello ✔", // Subject line
+          text: "Welcome", // plain text body
+          html: "<b>You have Successfuly login</b>", // html body
+        });
+        
+        console.log("Message sent: %s", info.messageId);
+       } catch (error) {
+        console.log("Error: %s", error)
+        
+       }
 
   // to save user in db
-
   user
     .save(user)
     .then((data) => {
@@ -57,11 +83,11 @@ exports.create = (req, res) => {
         .status(500)
         .send("Some error occured while creating a create operation");
     });
-};
 
+}
 // retrive and return all users/ retrive or return single user
 exports.find = async (req, res) => {
-  console.log("find all called");
+  console.log("Check");
   if (req.query.id) {
     const id = req.query.id;
     Userdb.findById(id)
@@ -77,13 +103,18 @@ exports.find = async (req, res) => {
       });
   } else {
     console.log(req.query);
-    // params mai gender
-    if (req.query.gender) {
-      try {
-        // incative query 
-        const filter = { gender: req.query.gender }; 
+    //  gender
+// const name = await user.find({name: {$regrex: search, $options: "i"}})
 
-        const data = await Userdb.aggregate([{ $match: filter }, {$match : {status : "Inactive"}}]);
+    if (req.query.gender) {
+      // Userdb.gender = req.query.gender === 
+      try {
+        // inative query 
+        const filter = { gender: req.query.gender }; 
+console.log(filter);
+        const data = await Userdb.aggregate([{ $match: filter }
+          // , {$match : {status : "Inactive"}}
+               ]);
 
         res.send(data);
         return;
@@ -96,6 +127,7 @@ exports.find = async (req, res) => {
     Userdb.find()
       // .sort("gender status")
       .then((user) => {
+        console.log("user",user);
         res.send(user);
       })
       .catch((e) => {
@@ -110,7 +142,7 @@ exports.update = (req, res) => {
     return res.status(400).send({ message: "Data to update cannot be empty" });
   }
   const id = req.params.id;
-  Userdb.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Userdb.findByIdAndUpdate(id, req.body, { useFindAndModify: false }) //modify and returns single document
     .then((data) => {
       if (!data) {
         res.status(404).send({
