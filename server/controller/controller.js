@@ -1,23 +1,23 @@
 var Userdb = require("../model/model");
 const nodemailer = require("nodemailer");
-// const multer = require("multer")
+const multer = require("multer");
 
-// if (typeof localStorage === "undefined" || localStorage === null) {
-//   const LocalStorage = require('node-localstorage').LocalStorage;
-//   localStorage = new LocalStorage('./scratch');
-// }
 // // middleware
-// var Storage= multer.diskStorage({
-//   destination:"./assets/img/",
-//   filename:(req,file,cb)=>{
-//     cb(null,file.fieldname+"_"+Date.now()+path.extname(file.originalname));
-//   }
-// });
+var uplode = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "./uploads");
+    },
+    filename: function (req, file, callback) {
+      callback(
+        null,
+        file.fieldname + "-" + Date.now() + Path.extname(file.originalname)
+      );
+    },
+  }),
+});
 
-// var upload = multer({
-//   storage:Storage
-// }).single('image');
-
+// uplode.single('image) ??? kidr aiyga
 // create and save new user
 exports.create = async (req, res) => {
   // validate request
@@ -83,7 +83,7 @@ exports.find = async (req, res) => {
   if (req.query.name) {
     const name = req.query.name;
 
-    console.log("This is from contorller user find by name");
+    // console.log("This is from contorller user find by name");
     try {
       const users = await Userdb.aggregate([
         { $match: { name: name } },
