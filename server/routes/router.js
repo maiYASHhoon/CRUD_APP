@@ -1,8 +1,25 @@
 const express = require("express");
 const route = express.Router();
+const multer = require("multer");
 
 const services = require("../services/render");
 const controller = require("../controller/controller");
+
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./uploads");
+  },
+  filename: function (req, file, callback) {
+    callback(
+      null,
+      file.fieldname + "-" + Date.now() + Path.extname(file.originalname)
+    );
+  },
+});
+
+var upload = multer({
+  storage: storage,
+}).single("image");
 
 /**
  * @description Root route

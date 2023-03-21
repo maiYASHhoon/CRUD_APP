@@ -4,7 +4,6 @@ const morgan = require("morgan");
 // const bodyparser = require("body-parser");
 const path = require("path");
 
-
 const app = express();
 
 dotenv.config({ path: "config.env" });
@@ -14,7 +13,7 @@ const PORT = process.env.PORT || 8080;
 // log request
 app.use(morgan("tiny"));
 
-// mongodb connection 
+// mongodb connection
 require("./server/database/connection");
 
 // parse requests of content-type - application/json
@@ -25,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(bodyParser.urlencoded({ extended: true }));
 // set view engine
 app.set("view engine", "ejs");
+app.use(express.static("uploads"));
 // app.set('views', path.resolve(__dirname, "views/ejs"))
 
 // load assets
@@ -34,7 +34,6 @@ app.use("/js", express.static(path.resolve(__dirname, "assets/js")));
 
 // load Routers
 app.use("/", require("./server/routes/router"));
-
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);

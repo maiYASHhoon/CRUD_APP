@@ -1,21 +1,7 @@
 var Userdb = require("../model/model");
 const nodemailer = require("nodemailer");
-const multer = require("multer");
 
 // // middleware
-var uplode = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "./uploads");
-    },
-    filename: function (req, file, callback) {
-      callback(
-        null,
-        file.fieldname + "-" + Date.now() + Path.extname(file.originalname)
-      );
-    },
-  }),
-});
 
 // uplode.single('image) ??? kidr aiyga
 // create and save new user
