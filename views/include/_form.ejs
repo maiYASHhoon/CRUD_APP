@@ -1,24 +1,40 @@
 <!-- form - handling -->
-<form action="/api/users" method="POST" id="add_user">
+<form
+  method="post"
+  action="/api/users"
+  id="add_user"
+  enctype="multipart/form-data"
+>
   <div class="new_user">
     <div class="form-group">
       <label for="name" class="text-light">Name</label>
       <input type="hidden" name="id" value="" />
-      <input type="text" name="name" value="" placeholder="Yash Dayama" required/>
+      <input
+        type="text"
+        name="name"
+        value=""
+        placeholder="Yash Dayama"
+        required
+      />
     </div>
 
     <div class="form-group">
       <label for="Email" class="text-light">Email</label>
-      <input type="text" name="email" value="" placeholder="demo@gmail.com" required/>
+      <input
+        type="text"
+        name="email"
+        value=""
+        placeholder="demo@gmail.com"
+        required
+      />
     </div>
 
-    <!-- <div class="new_user">
-      <div class="form-group">
-        <label for="Image" class="text-light">Image</label>
-        <input type="hidden" name="id" value="" />
-        <input type="file" name="file" value=""  />
-      </div> -->
-
+    <div class="form-group">
+      <label for="Image" class="text-light">Image</label>
+      <input type="file" name="image" value="" />
+      <img src="" width="100" class="img-thumbnail mt-1" />
+    </div>
+    <input type="hidden" name="old_image" value="" />
     <div class="form-group">
       <label for="gender" class="text-light">Gender</label>
       <div class="radio inline">
@@ -43,10 +59,8 @@
       </div>
     </div>
 
-    
-
     <div class="form-group">
-      <button type="submit"  class="btn text-dark update" >Save</button>
+      <button type="submit" class="btn text-dark update">Save</button>
     </div>
   </div>
 </form>

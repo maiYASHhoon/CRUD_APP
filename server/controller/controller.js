@@ -1,64 +1,108 @@
 var Userdb = require("../model/model");
-// const multer = require("multer")
+const nodemailer = require("nodemailer");
+const multer = require("multer");
 
-// img storage
-// const Storage = multer.diskStorage({
-//   destination: "uploads",
-//   filename: (req, file, cb) =>{
-//     cb(null, file.originalname)
-//   }
-// })
+// // middleware
+var uplode = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "./uploads");
+    },
+    filename: function (req, file, callback) {
+      callback(
+        null,
+        file.fieldname + "-" + Date.now() + Path.extname(file.originalname)
+      );
+    },
+  }),
+});
 
-// const upload = multer({
-//   storage: Storage
-// }).single('testImage')
-
-// const uplode = multer({
-//   dest: 'images'
-// })
-
+// uplode.single('image) ??? kidr aiyga
 // create and save new user
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   // validate request
   // console.log("in create");
-  console.log("req.body", req.body);
+  // console.log("add user called");
+
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty" });
     return;
   }
-console.log("req.body",req.body);
+
   // new user
   const user = new Userdb({
     name: req.body.name,
     email: req.body.email,
     gender: req.body.gender,
     status: req.body.status,
-    // image: {
-    //   data: req.file.filename,
-    //   contentType: 'image/png'
-    // }
+    image: req.body.image,
   });
 
-  // to save user in db
+  // res.send()
+  // send email to the email id
 
+  let transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: "cooper.emmerich37@ethereal.email",
+      pass: "gSX2GyeuaBknE6dwa7",
+    },
+  });
+  try {
+    let info = transporter.sendMail({
+      from: '"Yash Dayama 👻" <cooper.emmerich37@ethereal.email>', // sender address
+      to: req.body.email, // list of receivers
+      subject: "Hello ✔", // Subject line
+      text: "Welcome", // plain text body
+      html: "<b>You have Successfuly login</b>", // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+  } catch (error) {
+    console.log("Error: %s", error);
+  }
+
+  // to save user in db
   user
     .save(user)
-    .then(data => {
-      // res.send(data);
-      res.redirect("/add-user");
+    .then((data) => {
+      res.send(data);
     })
     .catch((e) => {
       console.log(e.message);
-      res.status(500).send("Some error occured while creating a create operation")
+      res
+        .status(500)
+        .send("Some error occured while creating a create operation");
     });
-  console.log(user);
 };
-
 // retrive and return all users/ retrive or return single user
-exports.find = (req, res) => {
-  if (req.query.id) {
+exports.find = async (req, res) => {
+  // console.log("Check");
+  if (req.query.name) {
+    const name = req.query.name;
+
+    // console.log("This is from contorller user find by name");
+    try {
+      const users = await Userdb.aggregate([
+        { $match: { name: name } },
+        { $sort: { name: 1 } },
+      ]);
+
+      if (!users) {
+        res.status(404).send({ message: "Not found user with name" });
+        return;
+      }
+
+      res.send(users);
+    } catch (e) {
+      res.status(500).send({ message: "Error reteriving user with name" });
+    }
+  } else if (req.query.id) {
     const id = req.query.id;
     Userdb.findById(id)
+      .sort({ name: 1 })
       .then((data) => {
         if (!data) {
           res.status(404).send({ message: "Not found user with id" });
@@ -70,8 +114,35 @@ exports.find = (req, res) => {
         res.status(500).send({ message: "Error reteriving user with id" });
       });
   } else {
-    Userdb.find().sort("gender status")
+    console.log(req.query);
+    //  gender
+    // const name = await user.find({name: {$regrex: search, $options: "i"}})
+
+    if (req.query.gender) {
+      // Userdb.gender = req.query.gender ===
+      try {
+        // inative query
+        const filter = { gender: req.query.gender };
+        // console.log(filter);
+        const data = await Userdb.find({ gender: req.query.gender });
+
+        // .aggregate([{ $match: filter }
+        // , {$match : {status : "Inactive"}}
+        //  ]);
+
+        res.send(data);
+        return;
+      } catch (err) {
+        console.log(err.message);
+        res.status(500).send(err);
+      }
+    }
+
+    Userdb.find()
+      .sort({ name: 1 })
+      // .sort("gender status")
       .then((user) => {
+        console.log("user", user);
         res.send(user);
       })
       .catch((e) => {
@@ -80,14 +151,13 @@ exports.find = (req, res) => {
   }
 };
 
-
 // update and new identified user by user id
 exports.update = (req, res) => {
   if (!req.body) {
     return res.status(400).send({ message: "Data to update cannot be empty" });
   }
   const id = req.params.id;
-  Userdb.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Userdb.findByIdAndUpdate(id, req.body, { useFindAndModify: false }) //modify and returns single document
     .then((data) => {
       if (!data) {
         res.status(404).send({
