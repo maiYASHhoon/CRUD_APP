@@ -12,7 +12,13 @@
       </a>
     </div>
 
-    <input type ="text" name="" id="site-main" placeholder="Names..." onkeyup="searchFun()"> 
+    <input
+      type="text"
+      name=""
+      id="site-main"
+      placeholder="Names..."
+      onkeyup="searchFun(this.value)"
+    />
 
     <select name="Gender" id="site-main">
       <!-- <option value="#">#</option> -->
@@ -38,7 +44,6 @@
           <%- include('include/_show')%>
         </tbody>
       </table>
-      
     </form>
   </div>
 </main>

@@ -24,10 +24,8 @@ var schema = new mongoose.Schema({
     type: String,
     uppercase: true,
   },
-  image:{
-    data: Buffer,
-    contentType: String
-  }
+  image:String,
+  
 });
 
 
