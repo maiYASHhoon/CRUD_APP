@@ -6,26 +6,37 @@ const path = require("path");
 const services = require("../services/render");
 const controller = require("../controller/controller");
 
-var storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-console.log(req,file)
-    cb(null, __dirname, "../uploads");
-  },
-  filename: function (req, file, callback) {
-  console.log("in function")
+// var storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+// // console.log(req,file)
+//     cb(null, __dirname, "assets/imgages");
+//   },
+//   filename: function (req, file, callback) {
+//   // console.log("in function")
 
-    callback(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
-  },
-});
-// console.log("storage", storage);
-var upload = multer({
+//     callback(
+//       null,
+//       file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+//     );
+//   },
+// });
+// var upload = multer({
   
-  storage: storage,
-  // fileFilter: multerFilter,
-}).single('image')
+//   storage: storage,
+//   // fileFilter: multerFilter,
+// }).single('image')
+
+let storage = multer.diskStorage({
+  destination: 'assets/images/',
+  filename: (req, file, cb) => {
+    // cb(null, Date.now(+file+originalname))
+    cb(null, file.originalname)
+  }
+})
+// console.log("storage", storage);
+let upload = multer({
+  storage: storage
+})
 
 /**
  * @description Root route
@@ -48,7 +59,7 @@ route.get("/add-user", services.add_user);
 route.get("/update-user", services.update_user);
 
 // API
-route.post("/api/users",upload, controller.create
+route.post("/api/users",upload.single('image'), controller.create
 // (req, res) => {console.log("req.files,req.file",req.files,req.file)}
 );
 route.get("/api/users", controller.find);
