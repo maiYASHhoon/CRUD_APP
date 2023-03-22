@@ -1,21 +1,7 @@
 var Userdb = require("../model/model");
 const nodemailer = require("nodemailer");
-const multer = require("multer");
 
 // // middleware
-var uplode = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "./uploads");
-    },
-    filename: function (req, file, callback) {
-      callback(
-        null,
-        file.fieldname + "-" + Date.now() + Path.extname(file.originalname)
-      );
-    },
-  }),
-});
 
 // uplode.single('image) ??? kidr aiyga
 // create and save new user
@@ -23,7 +9,7 @@ exports.create = async (req, res) => {
   // validate request
   // console.log("in create");
   // console.log("add user called");
-
+console.log("create",req.files,req.file)
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty" });
     return;
@@ -35,9 +21,9 @@ exports.create = async (req, res) => {
     email: req.body.email,
     gender: req.body.gender,
     status: req.body.status,
-    image: req.body.image,
+    image: req.file.filename,
   });
-
+  console.log("user");
   // res.send()
   // send email to the email id
 
