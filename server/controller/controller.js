@@ -21,9 +21,9 @@ exports.create = async (req, res) => {
     email: req.body.email,
     gender: req.body.gender,
     status: req.body.status,
-    image: req.body.image,
+    image: req.file.filename,
   });
-
+  console.log("user");
   // res.send()
   // send email to the email id
 

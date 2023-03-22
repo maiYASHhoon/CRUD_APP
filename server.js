@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(bodyParser.urlencoded({ extended: true }));
 // set view engine
 app.set("view engine", "ejs");
-app.use(express.static("uploads"));
+app.use(express.static("server/uploads"));
 // app.set('views', path.resolve(__dirname, "views/ejs"))
 
 // load assets
