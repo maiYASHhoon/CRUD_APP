@@ -1,13 +1,15 @@
 $("#add_user").submit(function (event) {
 
-  event.preventDefault();
+  // event.preventDefault();
 
-  var unindexed_array = $(this).serializeArray();
-  var data = {};
-
-  $.map(unindexed_array, function (n, i) {
-    data[n["name"]] = n["value"];
-  });
+  // var unindexed_array = $(this).serializeArray();
+  // var data = {};
+  var form = $('#add_user');
+  // console.log(event)
+  // var data = new FormData(form);
+  // $.map(unindexed_array, function (n, i) {
+  //   data[n["name"]] = n["value"];
+  // });
 
   var request = {
     "url": `http://localhost:3000/api/users`,

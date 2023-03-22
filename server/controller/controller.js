@@ -9,7 +9,7 @@ exports.create = async (req, res) => {
   // validate request
   // console.log("in create");
   // console.log("add user called");
-
+console.log("create",req.files,req.file)
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty" });
     return;
